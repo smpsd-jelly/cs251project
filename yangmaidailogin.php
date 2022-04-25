@@ -1,18 +1,5 @@
 <?php include('server.php'); ?>
-<?php 
-   
-   $sql = "SELECT * FROM name";
-   $result = $conn->query($sql);
-   $sql1 = "SELECT * FROM concert";
-   $result1 = $conn->query($sql1);
-   $sql2 = "SELECT * FROM date";
-   $result2 = $conn->query($sql2);
-   $sql3 = "SELECT * FROM ticket";
-   $result3 = $conn->query($sql3);
-   $sql4 = "SELECT * FROM location";
-   $result4 = $conn->query($sql4);
 
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -60,7 +47,6 @@
             text-align: center;
             font-size: 35px;
             padding: 8px;
-            
         }
 
         tr:nth-child(even) {
@@ -69,27 +55,59 @@
 
         .footer {
             width: 100.0%;
-            height:50px;
+            height:170px;
+	        
 	        bottom:0px;
             background-color: black;
             text-align: left;
             font-family: 'Open Sans', sans-serif;
             font-family: 'Prompt', sans-serif;
         }       
-        .boxEdit {
-            
-            top: 50%;
-            color : #282828;
-            align: center;
-            left: 80%;
-            background-color: white;
-            width: 70%;
-            height: 100%;
-            border: 2px solid white;
-            padding: 15px;
-            margin: 20px;
+        .dropbtn {
+            background-color: black;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            font-family: 'Open Sans', sans-serif;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .dropdown {
+            position: relative;
             display: inline-block;
-            box-shadow: 5px 10px 8px #888888;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            font-family: 'Open Sans', sans-serif;
+            font-family: 'Prompt', sans-serif;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            font-family: 'Open Sans', sans-serif;
+            font-family: 'Prompt', sans-serif;
+            font-size: 16px;
+        }
+
+        .dropdown-content a:hover {background-color: #f1f1f1}
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
         }
 
         .blank {
@@ -97,10 +115,6 @@
             width: 11%;
             height: 100%;
             display: inline-block;
-        }
-
-        .gallery{
-             display: flex;
         }
 
         figure{
@@ -113,6 +127,50 @@
 
         figure figcaption{
             text-align: center;
+        }
+
+        .mytext {
+          background-color: white;
+          width: 100%;
+          margin-top: 50px;
+          text-align: center;
+        }
+
+        .concerticon {
+          width: 300px;
+          height: 700px;
+          border: 1px solid lightgray;
+        }
+
+        concert img{
+            width: 100%;
+        }
+
+        .columnicon {
+          float: left;
+          width: 20%;
+          padding: 15px;
+        }
+
+        .boxconcert {
+            text-align: center;
+            display: flex:
+            width: 900px;
+            margin-left: 12%;
+            margin-top: 10px;
+            padding: 25px;
+        }
+
+        .columnconcert {
+            float: left;
+            width: 25%;
+            padding: 25px;
+        }
+
+        .rowconcert:after {
+            content: "";
+            display: table;
+            clear: both;
         }
 
         .button {
@@ -134,7 +192,33 @@
         
         .button:hover {
             background-color: gray;
-        }       
+        }
+
+        .btn-text-center{
+            width: 100%
+        }
+
+        .b1{
+            background-color: black;
+            border: none;
+            color: white;
+            padding: 15px 20px;
+        }
+        .b1:hover{
+            background-color: gray;
+            color: white;
+        }
+        .b2{
+            background-color: white;
+            border: none;
+            color: black;
+            padding: 15px 20px;
+        }
+        .d{
+            font-family: 'prompt', sans-serif;
+            font-size:14px;
+            font-weight: normal;
+        }
          
     </style>
     
@@ -148,129 +232,117 @@
         <input type="text" placeholder="Search.." name="search">
         <button type="submit"><i class="fa fa-search"></i></button>
     </form></th>
-    <th><a href="login.php"><input type="button" value="SIGN IN"></th>
-    <th><a href="signup.php"><input type="button" value="SIGN UP NOW"></th>
+    <th><a class="b2 b1 d" href="login.php" style="text-decoration:none" value="login">LOGIN</an></th>
+    <th><a href="signup.php" style="text-decoration:none" class="b1 d">SIGN UP NOW</a></th>
   </tr>
   </table>
 
-  <h1 align="center">POPULAR CONCERTS</h1>
-  <div class = "blank"></div>
-<div class = "boxEdit">
-<div class="gallery">
-<?php $row = $result->fetch_assoc() ?>
- <?php $row1 = $result1->fetch_assoc() ?>
- <?php $row2 = $result2->fetch_assoc() ?>
- <?php $row3 = $result3->fetch_assoc() ?>
- <?php $row4 = $result4->fetch_assoc() ?>
-      <figure>
-        <img src="img\all2.jpg">
-        <figcaption>
-        <p style="font-size:20px;"><?php echo $row1['Concert_Name'];?></p>
-        <p><?php echo $row2['Date'];?></p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px"><?php echo $row4['Location_Name'];?></p>
-        </br></br>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="img\pop2.jpg">
-        <figcaption>
-        <p style="font-size:20px;">Kamikaze Party 2021</p>
-        <p>28 August 2021</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">Impact Arena, Muang Thong Thani</p>
-        </br></br>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="img\pop3.jpg">
-        <figcaption>
-        <p style="font-size:20px;">RRCB MBK (ROCK And ROLL Come Back MBK)</p>
-        <p>Coming Soon</p>
-        <p style ="color:gray;font-size:12px">Floor G, Avenu<img src="img\map-locator.png" style="width:5%;float:left">e ZONE A-B (Skywalk)
-MBK Center</p>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      </div>
-    <h1 align="center">ALL CONCERT</h1>
-    <div class="gallery">
-      <figure>
-        <img src="img\all1.jpg">
-        <figcaption>
-        <p style="font-size:20px;">2020 TRINITY INVISIBLE WORLD LIVE IN BANGKOK</p>
-        <p>Coming Soon</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">Impact Arena, Muang Thong Thani/
-Live Streaming by TTM LIVE</p>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="img\pop1.jpg">
-        <figcaption>
-        <p style="font-size:20px;">PHUKET SUNSET BEACH RUN</p>
-        <p>Coming Soon</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">Siam Parasite</p>
-        
-        </br></br>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="img\all3.png">
-        <figcaption>
-        <p style="font-size:20px;">Polycat Live Concert</p>
-        <p>22 April 2021</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">Bang Tao Beach, Laguna Phuket, Phuket</p>
-        
-        </br></br></br></br>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      </div>
+  <div class= "mytext"><h1>POPULAR CONCERTS</h1></div>
 
-      <div class="gallery">
-      <figure>
-        <img src="img\all4.jpg">
-        <figcaption>
-        <p style="font-size:20px;">LEO presents Cat Expo Chiang Mai</p>
-        <p>24 April 2021</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">Centralplaza Chiangmai Airport</p>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="img\all5.jpg">
-        <figcaption>
-        <p style="font-size:20px;">Oonrak Christmas Party 2020</p>
-        <p>24 April 2021</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">LIDO CONNECT HALL 3</p>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      <figure>
-        <img src="img\all6.jpg">
-        <figcaption>
-        <p style="font-size:20px;">Ink Warantorn Live Concert</p>
-        <p>20 April 2020</p>
-        <img src="img\map-locator.png" style="width:5%;float:left">
-        <p style ="color:gray;font-size:12px">TROK BANG KOK</p>
-        <a href="login.php" class="button">BUY NOW</a>
-        </figcaption>
-      </figure>
-      </div>
-      <a href="selectconcert.php" class="button">VIEW ALL</a>
+<?php
+    
+    $sql = 
+    "SELECT customer_order.Concert_ID, COUNT(customer_order.Concert_ID), 
+    concert.Concert_Name, concert.Concert_ID, concert.Img, 
+    date.Date,
+    location.Location_Name
+    FROM (((customer_order 
+    LEFT JOIN concert
+    on customer_order.Concert_ID =  concert.Concert_ID)
+    INNER JOIN date ON concert.Concert_ID = date.Concert_ID)
+    INNER JOIN location ON concert.Concert_ID = location.Concert_ID)
+    GROUP BY customer_order.Concert_ID HAVING COUNT(customer_order.Concert_ID) >='3'
+    ";
+
+    $result = $conn->query($sql);
+    if ($result->num_rows > 0) :
+    // output data of each row
+?>
+<div class = "boxconcert">
+    <div class= "rowconcert">  
+    <?php
+        while($row = $result->fetch_assoc()):
+    ?>
+           
+           <div class = "columnconcert">
+                    <div class = "concerticon">
+                        <concert>
+                            <a href= "toPay.php">
+                            <img src=  "data: image/jpeg;base64, <?php echo base64_encode($row['Img'])?> ">
+                            </a>
+                            <p style="font-size:19px;">&nbsp; <?php echo $row['Concert_Name']?></p>
+                            <p>&nbsp; <?php echo $row['Date']?></p>
+                            
+                            <p style ="color:gray;font-size:12px"><img src="img\map-locator.png" style="width:5%">&nbsp; <?php echo $row['Location_Name']?></p>
+                            <?php    if ($row['Concert_ID']=='1') : ?>
+                                <div class="btn-text-center"><a href="Login.php" align="center" class="button">BUY NOW</a></div>
+                            <?php    else : ?>
+                                <div class="btn-text-center"><a href="Login.php" align="center" class="button">BUY NOW</a></div>
+                            <?php endif ?>    
+                        </concert>
+                    </div>
+            </div> 
+    <?php endwhile ?> 
+    <?php    else : ?>
+        <h2 style="margin:200px;"><?php echo "0 results" ?></h2>
+    <?php endif ?>     
+    </div>    
+</div>
+
+<div class= "mytext"><h1>ALL CONCERTS</h1></div>
+<?php
+    
+    $sql = 
+    "SELECT concert.Concert_Name, concert.Concert_ID, concert.Img, 
+    date.Date,
+    location.Location_Name
+    FROM ((concert 
+    INNER JOIN date ON concert.Concert_ID = date.Concert_ID)
+    INNER JOIN location ON concert.Concert_ID = location.Concert_ID)
+    ";
+
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) :
+    // output data of each row
+?>
+<div class = "boxconcert">
+    <div class= "rowconcert">  
+    <?php
+        while($row = $result->fetch_assoc()):
+    ?>
+           
+           <div class = "columnconcert">
+                    <div class = "concerticon">
+                        <concert>
+                            <a href= "toPay.php">
+                            <img src=  "data: image/jpeg;base64, <?php echo base64_encode($row['Img'])?> ">
+                            </a>
+                            <p style="font-size:19px;">&nbsp; <?php echo $row['Concert_Name']?></p>
+                            <p>&nbsp; <?php echo $row['Date']?></p>
+                            
+                            <p style ="color:gray;font-size:12px"><img src="img\map-locator.png" style="width:5%">&nbsp; <?php echo $row['Location_Name']?></p>
+                            <?php    if ($row['Concert_ID']=='1') : ?>
+                                <div class="btn-text-center"><a href="Login.php" align="center" class="button">BUY NOW</a></div>
+                            <?php    else : ?>
+                                <div class="btn-text-center"><a href="Login.php" align="center" class="button">BUY NOW</a></div>
+                            <?php endif ?>    
+                        </concert>
+                    </div>
+            </div> 
+    <?php endwhile ?> 
+    <?php    else : ?>
+        <h2 style="margin:200px;"><?php echo "0 results" ?></h2>
+    <?php endif ?>   
+      
+    </div>    
+</div>
+
+<div class="mytext" ><a href="selectconcert.php" align="center" class="button">VIEW ALL</a></div>
       </br></br></br></br>
-    </div>
+    </div> 
 
-   <div class="footer">
+   <div class="footer" >
    <footer><a href="yangmaidailogin.php"><h2><p style="color:white;">wowTicket</p></h3></footer>
    <footer><a href="contact.php"><p style="color:black;">help</p></footer>
    <footer><a href="contact.php"><p style="color:black;">Support</p></footer>

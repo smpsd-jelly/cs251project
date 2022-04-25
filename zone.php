@@ -17,7 +17,17 @@
    $result4 = $conn->query($sql4);
    $sql5 = "SELECT * FROM buying";
    $result5 = $conn->query($sql5);
+   session_start();
+   if (!isset($_SESSION['username'])) {
+      $_SESSION['msg'] = "You must log in first";
+      header('location: login.php');
+  }
 
+  if (isset($_GET['logout'])) {
+      session_destroy();
+      unset($_SESSION['username']);
+      header('location: login.php');
+  }
 
 ?>
 <!DOCTYPE html>
@@ -181,7 +191,7 @@
   height: 900px; /* Should be removed. Only for demonstration */
 }
 .column2 {
-  float: left;
+  float: center;
   width: 50%;
   padding: 10px;
   height: 100px; /* Should be removed. Only for demonstration */
@@ -242,8 +252,8 @@
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
-  height: 85%;
+  width: 75%;
+  height: 95%;
 }
 
 /* The Close Button */
@@ -263,16 +273,17 @@
 
 .buy {
                display: block;
-               width: 110px;
-               font-size: 12px;
+               width: 230px;
+               font-size: 28px;
                font-weight: bold;
                background-color: #878787;
                padding: 0 18px;
-               line-height: 30px;
+               line-height: 40px;
                border-radius: 15px;
                color: #fff;
                text-decoration: none;
-               float: right;
+               text-align: center;
+               
             }
 
             
@@ -323,21 +334,27 @@
 <body>
 <table>
   <tr>
-    <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
+    <th><a href="loginlaew.php"style="text-decoration:none ">wowTicket</th>
     <th><form class="example" action="action_page.php">
         <input type="text" placeholder="Search.." name="search">
         <button type="submit"><i class="fa fa-search"></i></button>
     </form></th>
-<th><div class="dropdown">   
-<button class="dropbtn">PROFILE</button>
-  <div class="dropdown-content">
-  <a href="editprofile.php">Edit Profile</a>
-  <a href="myticket.php">My Tickets</a>
-  <a href="mypurchases.php">My Purchases</a>
-  </div>
-</div></th>
-<!--    <th><input type="button" value="PROFILE"></th>-->
-    <th><input type="button" value="LOG OUT"></th>
+    <th><div class="dropdown">  
+        <!-- logged in user information -->
+        <button class="dropbtn">PROFILE</button>
+        <div class="dropdown-content">
+        <a href="editprofile.php">Edit Profile</a>
+        <a href="myticket.php">My Tickets</a>
+        <a href="mypurchases.php">My Purchases</a>
+        </div>
+        <?php if (isset($_SESSION['username'])) : ?>
+        
+        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
+              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
+                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
+        <?php endif ?>
+    </div></th>
+    <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
   </table>
   <?php $row = $result->fetch_assoc() ?>
@@ -346,144 +363,16 @@
   <h4 style="text-indent: 5em;"><?php echo $row['Concert_Name']; ?>&nbsp;&nbsp;&nbsp; <button class="button"onclick="location.href='detailticket.php'">MORE DETAIL</button></h4>
     <div class="row">
     <div class="column" style="background-color: white;">
-        <p style="text-indent: 9em;">&nbsp;&nbsp;&nbsp;<img id="myBtn" src="image/zone.png "></p>
+        <p style="text-indent: 9em;">&nbsp;&nbsp;&nbsp;<img id="myBtn" src="image/zone.jpg "></p>
     </div>
     
     <div class="column" style="background-color:white;">
        <br /><br /><br /><br /><br /><br />
-        <img src="image/-genelabcon-price.jpg " width="300" height="200">
-        <h4 style="text-indent: 1em;">Select Zone</h4>
-        <h5 style="text-indent: 3em;">that you want to sit </h5>
-        
-      
+        <img src="image/ticprics.png " width="300" height="200">
+        <p style="margin-left:35px" class="buy" onclick="location.href='seat.php'">Click to Select Zone</p>
+         
 
-                <!-- The Modal -->
-         <div id="myModal" class="modal">
-
-                <!-- Modal content -->
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <div class="row">
-                   
-                        <div class="column2" style="background-color: white;">
-                        <h2>ZONE:<?php echo $row1['Zone']; ?></h2>
-                        <h3>Price : <a><?php echo $row1['Price']; ?> ฿</a></h3>
-                        <a><div    class=" seatNumber ">&nbsp&nbsp&nbsp</div><p>Available </p></a>
-                        <a><div    class=" seatNumber seatUnavailable">&nbsp&nbsp&nbsp</div><p>Not Available </p></a>
-                        <a><div    class=" seatNumber seatSelected">&nbsp&nbsp&nbsp</div><p>Booked </p></a>
-                        <!--<p>
-                        <label for="tickets_quantity"># Tickets</label>
-                        <input type="number" min="1" name="tickets_quantity" id="tickets_quantity" required />
-                        </p>-->
-                        <!--<p>random seats number :</p>
-                        <p style ="color:red"> <?php echo $row1['SeatNum']; ?></p>
-                        <p>Price :</p>
-                        <p style ="color:red"> <?php echo $row1['Price']; ?> THB</p>
-        
-                        <p class="buy" href="#"onclick="location.href='ordercheckout.php'">CONTINUE</p>-->
-
-                 
-                        </div>
-
-                        <div class="column2" style="background-color: white;">
-                        
-                        <div class="seatSelection col-lg-12">
-                        
-                        <div class="seatsChart col-lg-6">
-                            <div class="seatRow">
-                                <div class="seatRowNumber">
-                                    Row 1
-                                </div>
-                                <div id="1_1" title="" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">&nbsp 1</div>
-                                <div id="1_2" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber "> &nbsp2</div>
-                                <div id="1_3" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber "> &nbsp3</div>
-                                <div id="1_4" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber "> &nbsp4</div>
-                                <div id="1_5" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">&nbsp 5</div>
-                                <div id="1_6" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber  "> &nbsp6</div>
-                                <div id="1_7" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber "> &nbsp7</div>
-                                <div id="1_8" role="checkbox" value="45" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber seatUnavailable "> &nbsp8</div>
-
-
-                            </div>
-                            <br/>
-                            <div class="seatRow">
-                                <div class="seatRowNumber">
-                                    Row 2
-                                </div>
-                                <div id="2_1" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">&nbsp9</div>
-                                <div id="2_2" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">10</div>
-                                <div id="2_3" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">11</div>
-                                <div id="2_4" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">12</div>
-                                <div id="2_5" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">13</div>
-                                <div id="2_6" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber seatUnavailable ">14</div>
-                                <div id="2_7" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">15</div>
-                                <div id="2_8" role="checkbox" value="42" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">16</div>
-
-                            </div>
-                            <br/>
-                            <div class="seatRow">
-                                <div class="seatRowNumber">
-                                    Row 3
-                                </div>
-                                <div id="3_1" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">17</div>
-                                <div id="3_2" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">18</div>
-                                <div id="3_3" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">19</div>
-                                <div id="3_4" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">20</div>
-                                <div id="3_5" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">21</div>
-                                <div id="3_6" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber  ">22</div>
-                                <div id="3_7" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">23</div>
-                                <div id="3_8" role="checkbox" value="38" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">24</div>
-
-                            </div>
-                            <br/>
-                            <div class="seatRow">
-                                <div class="seatRowNumber">
-                                    Row 4
-                                </div>
-                                <div id="4_1" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">25</div>
-                                <div id="4_2" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">26</div>
-                                <div id="4_3" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">27</div>
-                                <div id="4_4" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">28</div>
-                                <div id="4_5" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">29</div>
-                                <div id="4_6" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber  ">30</div>
-                                <div id="4_7" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">31</div>
-                                <div id="4_8" role="checkbox" value="30" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">32</div>
-
-                            </div>
-                            <br/>
-                            <div class="seatRow">
-                                <div class="seatRowNumber">
-                                    Row 5
-                                </div>
-                                <div id="5_1" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">33</div>
-                                <div id="5_2" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">34</div>
-                                <div id="5_3" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">35</div>
-                                <div id="5_4" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">36</div>
-                                <div id="5_5" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">37</div>
-                                <div id="5_6" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber  ">38</div>
-                                <div id="5_7" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">39</div>
-                                <div id="5_8" role="checkbox" value="28" aria-checked="false" focusable="true" tabindex="-1" class=" seatNumber ">40</div>
-                            </div>
-                        </div>
-                        
-                        <div class="seatsReceipt col-lg-2">
-                            <p><strong>Selected Seats: <span class="seatsAmount" />0 </span></strong> <button id="btnClear" class="btn">Clear</button></p>
-                            <ul id="seatsList" class="nav nav-stacked"></ul>
-                            <p class="buy" href="#"onclick="location.href='ordercheckout.php'">CONTINUE</p>
-
-                        </div>
-                        
-                    </div>
-
-                    
-                
-                
-                </div>
-
-				
-                        
-
-                        
+           
                        
             
                         
@@ -496,138 +385,7 @@
  </div>
                 
                 
-            
         
-                <script>
-
-                // Get the modal
-                var modal = document.getElementById("myModal");
-
-                // Get the button that opens the modal
-                var btn = document.getElementById("myBtn");
-
-                // Get the <span> element that closes the modal
-                var span = document.getElementsByClassName("close")[0];
-
-                // When the user clicks the button, open the modal 
-                btn.onclick = function() {
-                modal.style.display = "block";
-                }
-
-                // When the user clicks on <span> (x), close the modal
-                span.onclick = function() {
-                modal.style.display = "none";
-                }
-
-                // When the user clicks anywhere outside of the modal, close it
-                window.onclick = function(event) {
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
-                }
-
-
-                //seat
-                
-
-                </script>
-                <script>
-	 // Clicking any seat
-	 $(".seatNumber").click(
-        function () {
-            if (!$(this).hasClass("seatUnavailable")){
-                // If selected, unselect it
-                if ($(this).hasClass("seatSelected")) {
-                    var thisId = $(this).attr('id');
-                    var price = $('#seatsList .' + thisId).val();
-                    $(this).removeClass("seatSelected");
-                    $('#seatsList .' + thisId).remove();
-                    // Calling functions to update checkout total and seat counter.
-                    removeFromCheckout(price);
-                    refreshCounter();
-                }
-                else {
-                    // else, select it
-                    // getting values from Seat
-                    var thisId = $(this).attr('id');
-                    var id = thisId.split("_");
-                    var price = $(this).attr('value');
-                    var seatDetails = "Row: " + id[0] + "Seat:  " + id[1] + " Price:" + price+"1200THB";
-                    
-                   
-                    var freeSeats = parseInt($('.freeSeats').first().text());
-                    var selectedSeats = parseInt($(".seatSelected").length);
-                    
-                    // If you have free seats available the price of this one will be 0.
-                    if (selectedSeats < freeSeats) {
-                        price = 0;
-                    }
-
-                    // Adding this seat to the list
-                    var seatDetails = "Row: " + id[0] + "Seat:" + id[1] + " Price:" +"1200THB";
-                    $("#seatsList").append('<li value=' + price + ' class=' + thisId + '>' + seatDetails + "  </li>");
-                    $(this).addClass("seatSelected");
-                    
-                    
-                    refreshCounter();
-                }
-            }
-        }
-    );
-    // Clicking any of the dynamically-generated X buttons on the list
-    
-    // Show tooltip on hover.
-    $(".seatNumber").hover(
-        function () {
-            if (!$(this).hasClass("seatUnavailable")) {
-                var id = $(this).attr('id');
-                var id = id.split("_");
-                var price = $(this).attr('value');
-                var tooltip = "Row: " + id[0] + " Seat:" + id[1] + " Price:CA$:" + price;
-
-                $(this).prop('title', tooltip);
-            } else
-            {
-                $(this).prop('title', "Seat unavailable");
-            }
-        }
-        );
-    // Function to refresh seats counter
-    function refreshCounter() {
-        $(".seatsAmount").text($(".seatSelected").length); 
-    }
-    // Add seat to checkout
-    function addToCheckout(thisSeat) {
-        var seatPrice = parseInt(thisSeat);
-        var num = parseInt($('.txtSubTotal').text());
-        num += seatPrice;
-        num = num.toString();
-        $('.txtSubTotal').text(num);
-    }
-    // Remove seat from checkout
-    function removeFromCheckout(thisSeat) {
-        var seatPrice = parseInt(thisSeat);
-        var num = parseInt($('.txtSubTotal').text());
-        num -= seatPrice;
-        num = num.toString();
-        $('.txtSubTotal').text(num);
-    }
-
-    // Clear seats.
-    $("#btnClear").click(
-        function () {
-            $('.txtSubTotal').text(0);
-            $(".seatsAmount").text(0);
-            $('.seatSelected').removeClass('seatSelected');
-            $('#seatsList li').remove();
-        }
-    );
-</script>
-
-                
-      
-    
-    
     </div>
     
     </div>
@@ -635,7 +393,7 @@
 
     
 
-    <!-- <div style ="height:200px"> </div> -->
+    <div style ="height:200px"> </div>
     
     
     <div class="footer">

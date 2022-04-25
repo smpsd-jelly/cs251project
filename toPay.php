@@ -1,4 +1,22 @@
-<?php include('server.php'); ?>
+<?php 
+   
+    include('server.php'); 
+
+
+   session_start();
+   if (!isset($_SESSION['username'])) {
+      $_SESSION['msg'] = "You must log in first";
+      header('location: login.php');
+  }
+
+  if (isset($_GET['logout'])) {
+      session_destroy();
+      unset($_SESSION['username']);
+      header('location: login.php');
+  }
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,12 +39,7 @@
             font-family: 'Prompt', sans-serif;
         }
 
-        h1,h2{
-            font-family: 'Open Sans', sans-serif;
-            font-family: 'Prompt', sans-serif;
-        }
-
-        h3{
+        h1,h2,h3{
             font-family: 'Open Sans', sans-serif;
             font-family: 'Prompt', sans-serif;
         }
@@ -47,7 +60,7 @@
         }
 
         td, th {
-            border: 1px solid #dddddd;
+            border-collapse: collapse;
             text-align: center;
             font-size: 35px;
             padding: 8px;
@@ -60,13 +73,13 @@
         .footer {
             width: 100.0%;
             height:170px;
-	        position:fixed;
 	        bottom:0px;
             background-color: black;
             text-align: left;
             font-family: 'Open Sans', sans-serif;
             font-family: 'Prompt', sans-serif;
-        }       
+        }      
+         
         .dropbtn {
             background-color: black;
             color: white;
@@ -147,8 +160,8 @@
         }
 
         .concerticon {
-          width: 225px;
-          height: 600px;
+          width: 300px;
+          height: 750px;
           border: 1px solid lightgray;
         }
 
@@ -174,14 +187,15 @@
 
         .columnicon {
           float: left;
-          width: 23%;
+          width: 20%;
           padding: 15px;
         }
 
         .boxconcert {
+            text-align: center;
             display: flex:
             width: 900px;
-            margin-left: 15%;
+            margin-left: 12%;
             margin-top: 200px;
             padding: 25px;
         }
@@ -199,7 +213,7 @@
         }
 
         .button {
-        background-color: black; 
+        background-color: MidnightBlue; 
         border: none;
         width: 65%;
         color: white;
@@ -230,20 +244,27 @@
 <body>
 <table>
   <tr>
-    <th><a href="/loginlaew.php">wowTicket</th>
-    <th><form class="example" action="action_page.php">
-        <input type="text" placeholder="Search .." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+    <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
+    <th><form class="example" action="finding.php" method="GET">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-    <th><div class="dropdown">   
-    <button class="dropbtn">PROFILE</button>
-      <div class="dropdown-content">
-      <a href="/editprofile.php">Edit Profile</a>
-      <a href="/myticket.php">My Tickets</a>
-      <a href="/mypurchaes.php">My Purchases</a>
-      </div>
+    <th><div class="dropdown">  
+        <!-- logged in user information -->
+        <button class="dropbtn">PROFILE</button>
+        <div class="dropdown-content">
+        <a href="editprofile.php">Edit Profile</a>
+        <a href="myticket.php">My Tickets</a>
+        <a href="mypurchases.php">My Purchases</a>
+        </div>
+        <?php if (isset($_SESSION['username'])) : ?>
+        
+        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
+              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
+                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
+        <?php endif ?>
     </div></th>
-    <th><input type="button" value="LOG OUT"></th>
+    <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
 </table>
 
@@ -253,7 +274,7 @@
       <div class = "columnicon">
         <div class="boxiconselect">
               <icon>
-                <a href= "/toPay.php">
+                <a href= "toPay.php">
                 <img src= "img\money.png">
                 </a>
                 <h3 align="center" style="color:saddlebrown">To Pay</h3>
@@ -263,7 +284,7 @@
       <div class = "columnicon">
         <div class="boxicon">
               <icon>
-                <a href= "/toReceive.php">
+                <a href= "toReceive.php">
                 <img src= "img\delivery.png">
                 </a>
                 <h3 align="center" style="color:saddlebrown">To Receive</h3>
@@ -273,7 +294,7 @@
       <div class = "columnicon">
         <div class="boxicon">
               <icon>
-                <a href= "/Complete.php">
+                <a href= "Complete.php">
                 <img src= "img\check-mark.png">
                 </a>
                 <h3 align="center" style="color:saddlebrown">Completed</h3>
@@ -281,69 +302,65 @@
         </div>
       </div>
 </div> 
-<!----------
-<?php$sql = 
-"SELECT customer_order.Customer_ID, customer_order.Status, concert.Concert_Name, customer_order.Concert_ID
-FROM customer_order
-LEFT JOIN concert
-ON customer_order.Concert_ID = concert.Concert_ID
-WHERE Customer_ID='1' AND (Status='confirm')
-";
+
+<?php
+    $name = $_SESSION['username'];
+    
+    $sql = 
+    "SELECT customer.Customer_ID, customer.Username,
+    customer_order.CustomerOrder_ID, customer_order.Concert_ID, customer_order.Customer_ID, customer_order.Status,
+    date.Date,
+    concert.Concert_Name, concert.Img, 
+    location.Location_Name,
+    ticket.Zone, ticket.SeatNum, ticket.Price 
+    FROM (((((customer
+    INNER JOIN customer_order ON customer.Customer_ID = customer_order.Customer_ID)
+    INNER JOIN date ON customer_order.Concert_ID = date.Concert_ID)
+    INNER JOIN concert ON customer_order.Concert_ID = concert.Concert_ID) 
+    INNER JOIN location ON customer_order.Concert_ID = location.Concert_ID) 
+    INNER JOIN ticket ON customer_order.CustomerOrder_ID = ticket.CustomerOrder_ID)
+    WHERE customer.Username = '$name' AND customer_order.Status = 'confirm'
+    ";
     $result = $conn->query($sql);
 
-    if ($result->num_rows > 0) {
+    if ($result->num_rows > 0) :
     // output data of each row
-        while($row = $result->fetch_assoc()) {
-        echo"
-        <div class = "columnconcert">
-                    <div class = "concerticon">
-                        <concert>
-                            <a href= "/toPay.php">
-                            <img src= "img\all2.jpg">
-                            </a>
-                            <p style="font-size:20px;">&nbsp; ".$row['Concert_Name']."</p>
-                            <p>&nbsp; ".$row['Date'].".</p>
-                            <img src="img\map-locator.png" style="width:5%;float:left">
-                            <p style ="color:gray;font-size:12px">&nbsp; ".$row['Location_Name']."</p>
-                            <p  style ="color:brown;font-size:15px">&nbsp;Zone  ".$row['Zone'].", ".$row['SeatNum']."</p>
-                            <p  style ="color:brown;font-size:15px">&nbsp;920THB</p>
-                            <div class="btn-text-center"><a align="center" class="button">Continue Order</a></div>
-                        </concert>
-                    </div>
-            </div>";
-        }
-    } else {
-        echo "0 results";
-}?>--->
+?>
 <div class = "boxconcert">
-    <div class= "rowconcert"> 
+    <div class= "rowconcert">         
+<?php
+    while($row = $result->fetch_assoc()):
+    ?>
            
-            <div class = "columnconcert">
+           <div class = "columnconcert">
                     <div class = "concerticon">
                         <concert>
-                            <a href= "/toPay.php">
-                            <img src= "img\all2.jpg">
+                            <a href= "toPay.php">
+                            <img src=  "data: image/jpeg;base64, <?php echo base64_encode($row['Img'])?> ">
                             </a>
-                            <p style="font-size:20px;">&nbsp; $row['Concert_Name']."</p>
-                            <p>&nbsp; ".$row['Date'].".</p>
-                            <img src="img\map-locator.png" style="width:5%;float:left">
-                            <p style ="color:gray;font-size:12px">&nbsp; ".$row['Location_Name']."</p>
-                            <p  style ="color:brown;font-size:15px">&nbsp;Zone  ".$row['Zone'].", ".$row['SeatNum']."</p>
-                            <p  style ="color:brown;font-size:15px">&nbsp;920THB</p>
+                            <p style="font-size:19px;">&nbsp; <?php echo $row['Concert_Name']?></p>
+                            <p>&nbsp; <?php echo $row['Date']?></p>
+                            
+                            <p style ="color:gray;font-size:12px"><img src="img\map-locator.png" style="width:5%">&nbsp; <?php echo $row['Location_Name']?></p>
+                            <p  style ="color:brown;font-size:15px">&nbsp;Zone  <?php echo $row['Zone']?>, <?php echo $row['SeatNum']?></p>
+                            <p  style ="color:brown;font-size:15px">&nbsp;<?php echo $row['Price']?>THB</p>
                             <div class="btn-text-center"><a align="center" class="button">Continue Order</a></div>
                         </concert>
                     </div>
-            </div>
-           
+            </div> 
+    <?php endwhile ?> 
+    <?php    else : ?>
+        <h2 style="margin:200px;"><?php echo "0 results" ?></h2>
+    <?php endif ?>     
             
             
      </div>    
 </div>
-<!--
- <div class="footer">
-   <footer><a href="/loginlaew.php"><h2><p style="color:white;">wowTicket</p></h3></a></footer>
-   <p style="color:white;">help
-   <footer><a href="/contact.php"><p style="color:white;">Support</p></a></footer>
-    </div> -->
+
+<div class="footer">
+   <footer><a href="loginlaew.php"><h2><p style="color:white;">wowTicket</p></h3></footer>
+   <footer><a href="contact.php"><p style="color:white;">help</p></footer>
+   <footer><a href="contact.php"><p style="color:white;">Support</p></footer>
+    </div> 
 </body>
 </html>

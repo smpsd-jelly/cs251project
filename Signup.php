@@ -237,18 +237,15 @@
     <title>wowTicket</title>
 </head>
 <body>
-<table >
+<table>
   <tr>
     <th><a href="yangmaidailogin.php" style="text-decoration:none">wowTicket</th>
-    <th><form class="example" action="action_page.php">
-        <input  type="text" style= "width:30%" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+    <th><form class="example" action="finding.php" method="GET">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-    <th><a class="b2 b1 d" href="login.php" style="text-decoration:none" value="SIGN IN">SIGN IN</a></th>
-    <th><a href="signup.php" style="text-decoration:none" style="backgroung-color:black" class="b1 d e">SIGN UP NOW</a></th>
-</div></th>
-<!--    <th><input type="button" value="PROFILE"></th>-->
-    <!-- <th><input type="button" value="LOG OUT" ></th> -->
+    <th><a class="b2 b1 d" href="login.php" style="text-decoration:none" value="login">LOGIN</an></th>
+    <th><a href="signup.php" style="text-decoration:none" class="b1 d">SIGN UP NOW</a></th>
   </tr>
   </table>
   
@@ -299,11 +296,15 @@
     <input  type="email" id="email" name="email" placeholder="customer.test@gmail.com" require>
     <p></p>
     <input type="submit" name="reg_user" class="btn" value="Submit">
-    <a href="login.php" type="reset" value="Reset">Cancel</a>
+    <a type="reset" value="Reset" onclick="goBack()">Cancel</a>
   </form>
 </div>  
 
-
+<script>
+            function goBack() {
+                window.history.back();
+            }
+</script>
 
 </br>
 </br></br></br></br></br></br></br></br></br>
