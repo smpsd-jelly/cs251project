@@ -1,17 +1,16 @@
 <?php include('server.php'); ?>
 <?php 
-   
-    $sql = "SELECT * FROM name";
-    $result = $conn->query($sql);
-    $sql1 = "SELECT * FROM concert";
-    $result1 = $conn->query($sql1);
-    $sql2 = "SELECT * FROM date";
-    $result2 = $conn->query($sql2);
-    $sql3 = "SELECT * FROM ticket";
-    $result3 = $conn->query($sql3);
-    $sql4 = "SELECT * FROM location";
-    $result4 = $conn->query($sql4);
+    session_start();
+if (!isset($_SESSION['username'])) {
+   $_SESSION['msg'] = "You must log in first";
+   header('location: login.php');
+}
 
+if (isset($_GET['logout'])) {
+   session_destroy();
+   unset($_SESSION['username']);
+   header('location: login.php');
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -113,7 +112,7 @@
             font-size: 16px;
         }
 
-.dropdown-content a:hover {background-color: #f1f1f1}
+        .dropdown-content a:hover {background-color: #f1f1f1}
 
         .dropdown:hover .dropdown-content {
             display: block;
@@ -122,30 +121,88 @@
         .dropdown:hover .dropbtn {
             background-color: #3e8e41;
         }
-        .boxEdit {
-            position:  absolute; 
-            top: 20%;
-            color : #282828;
-            align: center;
-            left: 10%;
+
+        .blank {
             background-color: white;
-            width: 980px;
-            height: 700px;
-            border: 2px solid white;
-            padding: 15px;
-            margin: 20px;
+            width: 11%;
+            height: 100%;
             display: inline-block;
-            box-shadow: 5px 10px 8px #888888;
         }
-        
-        .gallery{
-        display: flex;
-        }
+
         figure{
-        width: 200px;
+            width: 200px;
         }
+
         figure img{
-        width: 100%;
+            width: 100%;
+        }
+
+        figure figcaption{
+            text-align: center;
+        }
+
+        .boxicon {
+          width: 125px;
+          height: 125px;
+          border: 5px solid lightgray;
+        }
+
+        .boxiconselect {
+          width: 125px;
+          height: 125px;
+          border: 5px solid chartreuse;
+        }
+
+        .concerticon {
+          width: 300px;
+          height: 750px;
+          border: 1px solid lightgray;
+        }
+
+        .mypurchases {
+          background-color: white;
+          width: 600px;
+          margin-left: 20%;
+          margin-top: 50px;
+        }
+
+        icon{
+            width: 125px;    
+        }
+
+        icon img{
+            width: 100%;
+        }
+
+        concert img{
+            width: 100%;
+        }
+
+        .columnicon {
+          float: left;
+          width: 20%;
+          padding: 15px;
+        }
+
+        .boxconcert {
+            text-align: center;
+            display: flex:
+            width: 900px;
+            margin-left: 12%;
+            margin-top: 20px;
+            padding: 25px;
+        }
+
+        .columnconcert {
+            float: left;
+            width: 25%;
+            padding: 25px;
+        }
+
+        .rowconcert:after {
+            content: "";
+            display: table;
+            clear: both;
         }
         
   .normal {
@@ -165,7 +222,7 @@
           line-height: 1px;
           }
           .button {
-        background-color: #45a049; /* Green */
+        background-color: SpringGreen; /* Green */
         border: none;
         width: 65%;
         color: white;
@@ -181,12 +238,17 @@
         .button:hover {
             background-color: #2EFF00;
         }
+
+        .btn-text-center{
+	        text-align: center;	
+        }
+
         /* The Modal (background) */
         .modal {
         display: none; /* Hidden by default */
         position: fixed; /* Stay in place */
         z-index: 1; /* Sit on top */
-        padding-top: 100px; /* Location of the box */
+        padding-top: 50px; /* Location of the box */
         left: 0;
         top: 0;
         width: 100%; /* Full width */
@@ -225,72 +287,111 @@
 </head>
 <body>
 <table>
-  <tr>
+    <tr>
     <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
-    <th><form class="example" action="action_page.php">
-        <input type="text" style= "width:30%"placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+    <th><form class="example" action="finding.php" method="GET">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-<th><div class="dropdown">   
-<button class="dropbtn">PROFILE</button>
-  <div class="dropdown-content">
-  <a href="editprofile.php">Edit Profile</a>
-  <a href="myticket.php">My Tickets</a>
-  <a href="mypurchases.php">My Purchases</a>
-  </div>
-</div></th>
-<!--    <th><input type="button" value="PROFILE"></th>-->
+    <th><div class="dropdown">  
+        <!-- logged in user information -->
+        <button class="dropbtn">PROFILE</button>
+        <div class="dropdown-content">
+        <a href="editprofile.php">Edit Profile</a>
+        <a href="myticket.php">My Tickets</a>
+        <a href="mypurchases.php">My Purchases</a>
+        </div>
+        <?php if (isset($_SESSION['username'])) : ?>
+        
+        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
+              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
+                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
+        <?php endif ?>
+    </div></th>
     <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
-  </table>
+</table>
+
  <!-- pic -->
- <div class = "center">
- <div class = "boxEdit">
-      <h1 class = "normal">My Tickets </h1>
-     
- <div class="gallery"> 
- <?php $row = $result->fetch_assoc() ?>
- <?php $row1 = $result1->fetch_assoc() ?>
- <?php $row2 = $result2->fetch_assoc() ?>
- <?php $row3 = $result3->fetch_assoc() ?>
- <?php $row4 = $result4->fetch_assoc() ?>
-      <figure>
-        <img src="image\all2.jpg">
-        <figcaption>
-        <h3 class = "normal" ><?php echo $row1['Concert_Name'];?></h3>
-        <p><?php echo $row2['Date'];?></p>
-        <img src="image\map-locator.png" style="width:20px;float:left">
-        <p style ="color:gray;font-size:12px"><?php echo $row4['Location_Name'];?></p>
-        <p style ="color:red">Zone<?php echo $row3['Zone'];?>,<?php echo $row3['SeatNum'];?></p>
-        <!-- modal -->
-        
-<!-- Trigger/Open The Modal -->
-<button class="button" id="myBtn">Open Modal</button>
-
-<!-- The Modal -->
-<div id="myModal" class="modal">
-
-  <!-- Modal content -->
-  <div class="modal-content">
-    <span class="close">&times;</span>
+<div class = "mypurchases"><h1 align="left">My Tickets</h1></div>
+<?php
+    $name = $_SESSION['username'];
     
-    <h3><?php echo $row1['Concert_Name'];?></h3>
-    <p><?php echo $row2['Date'];?></p>
-        <img src="image\map-locator.png" style="width:20px;float:left">
-        <p style ="color:gray;font-size:12px"><?php echo $row4['Location_Name'];?></p>
-        <img  src="image\qr-code.png" style="width: 100%">
-            <p class="alignleft" >Ticket Type: <span style="color:gray"><?php echo $row1['Category'];?></span></p>
-            <p class="alignright">Zone:<span style="color:gray"><?php echo $row3['Zone'];?></span></p>
-            <div style="clear: both;"></div>
-            <p class="alignleft">Price:<span style="color:gray"> <?php echo $row3['Price'];?> Bath</span></p>
-            <p class="alignright">SeatNo.:<span style="color:gray"><?php echo $row3['SeatNum'];?></span></p>
-            <div style="clear: both;"></div>
-            <h4><?php echo $row['FirstName'];?><span>
-            <?php echo $row['LastName'];?></span></br>
-            </br></br></br>
-            
-  </div>
+    $sql = 
+    "SELECT name.FirstName, name.LastName,
+    customer.Customer_ID, customer.Username, 
+    customer_order.CustomerOrder_ID, customer_order.Concert_ID, customer_order.Status,
+    date.Date,
+    concert.Concert_Name, concert.Img, 
+    location.Location_Name,
+    ticket.Zone, ticket.SeatNum, ticket.Price, ticket.TicketType
+    FROM ((((((customer
+    INNer JOIN name ON customer.Customer_ID = name.Customer_ID)
+    INNER JOIN customer_order ON customer.Customer_ID = customer_order.Customer_ID)
+    INNER JOIN date ON customer_order.Concert_ID = date.Concert_ID)
+    INNER JOIN concert ON customer_order.Concert_ID = concert.Concert_ID) 
+    INNER JOIN location ON customer_order.Concert_ID = location.Concert_ID) 
+    INNER JOIN ticket ON customer_order.CustomerOrder_ID = ticket.CustomerOrder_ID)
+    WHERE customer.Username = '$name' AND customer_order.Status = 'success'
+    ";
+    $result = $conn->query($sql);
 
+    if ($result->num_rows > 0) :
+    // output data of each row
+?>
+<div class = "boxconcert">
+    <div class= "rowconcert">         
+    <?php
+    while($row = $result->fetch_assoc()):
+    ?>
+           
+           <div class = "columnconcert">
+                    <div class = "concerticon">
+                        <concert>
+                            <a href= "toPay.php">
+                            <img src=  "data: image/jpeg;base64, <?php echo base64_encode($row['Img'])?> ">
+                            </a>
+                            <p style="font-size:19px;">&nbsp; <?php echo $row['Concert_Name']?></p>
+                            <p>&nbsp; <?php echo $row['Date']?></p>
+                            
+                            <p style ="color:gray;font-size:12px"><img src="img\map-locator.png" style="width:5%">&nbsp; <?php echo $row['Location_Name']?></p>
+                            <p  style ="color:brown;font-size:15px">&nbsp;Zone  <?php echo $row['Zone']?>, <?php echo $row['SeatNum']?></p>
+                            <p  style ="color:brown;font-size:15px">&nbsp;<?php echo $row['Price']?>THB</p>
+                              <!-- modal -->     
+                            <!-- Trigger/Open The Modal -->
+                            <div class="btn-text-center"><button name="ticket" class="button" id="myBtn">View Ticket</button></div>
+                        </concert>
+                    </div>
+            </div>
+    <!-- The Modal -->
+            <div id="myModal" class="modal">
+
+            <!-- Modal content -->
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h3><?php echo $row['Concert_Name']?></h3>
+                    <p><?php echo $row['Date']?></p>
+                        <img src="image\map-locator.png" style="width:20px;float:left">
+                        <p style ="color:gray;font-size:12px"><?php echo $row['Location_Name']?></p>
+                        <img  src="image\qr-code.png" style="width: 100%">
+                        <p class="alignleft" >Ticket Type: <span style="color:gray"><?php echo $row['TicketType']?></span></p>
+                        <p class="alignright">Zone&nbsp;<span style="color:gray"><?php echo $row['Zone']?></span></p>
+                        <div style="clear: both;"></div>
+                        <p class="alignleft">Price:<span style="color:gray"> <?php echo $row['Price']?> Bath</span></p>
+                        <p class="alignright">SeatNo.&nbsp;<span style="color:gray"><?php echo $row['SeatNum']?></span></p>
+                        <div style="clear: both;"></div>
+                        <h4><?php echo $row['FirstName']?>&nbsp;&nbsp;<?php echo $row['LastName']?></h4>
+                    </br></br></br></br>         
+                </div>
+            </div>
+         
+    <?php endwhile ?> 
+    <?php    else : ?>
+        <h2 style="margin:200px;"><?php echo "0 results" ?></h2>
+    <?php endif ?>     
+            
+            
+     </div>    
 </div>
 
 <script>
@@ -298,8 +399,9 @@
 var modal = document.getElementById("myModal");
 
 // Get the button that opens the modal
+//var btn = document.querySelector("[name='']");
+//var btn = document.getElementsByName("ticket")[0] || document.getElementsByName("ticket")[1];
 var btn = document.getElementById("myBtn");
-
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 

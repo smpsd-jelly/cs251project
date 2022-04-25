@@ -163,16 +163,16 @@
 <table>
   <tr>
     <th><a href="yangmaidailogin.php" style="text-decoration:none">wowTicket</th>
-    <th><form class="example" action="action_page.php">
+    <th><form class="example" action="finding.php" method="GET">
         <input type="text" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-    <th><a class="b2 b1 d" href="login.php" style="text-decoration:none" value="SIGN IN">SIGN IN</an></th>
+    <th><a class="b2 b1 d" href="login.php" style="text-decoration:none" value="login">LOGIN</an></th>
     <th><a href="signup.php" style="text-decoration:none" class="b1 d">SIGN UP NOW</a></th>
   </tr>
 </table>
 <div class="box">
-    <br><h1 align="center" style="font-weight: normal">Sign In</h1>
+    <br><h1 align="center" style="font-weight: normal">LOG IN</h1>
     <div align="center">
         <form action="login_db.php" method="post">
         <?php if (isset($_SESSION['error'])) : ?>
@@ -195,8 +195,8 @@
         
         <div class="input-group">
         <br>
-            <a href="loginlaew.php" style="text-decoration:none" class="b1 f" type="submit" name="login_user"><span>SIGN IN</span></a><br>
-            </div>
+        <button class="b1" type="submit" name="login_user" >LOG IN</button><br>
+                    </div>
     </form></div>
     <p><h6 align="center" class="no" style="color:gray">forgot password?<a href="signup.php" style="text-decoration:none"><span>&emsp;&emsp;Not a member yet?</span></a></h6></p>
     </div>

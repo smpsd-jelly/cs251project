@@ -1,3 +1,31 @@
+<?php 
+   
+    include('server.php'); 
+
+   $sql = "SELECT * FROM concert";
+   $result = $conn->query($sql);
+   $sql1 = "SELECT * FROM ticket";
+   $result1 = $conn->query($sql1);
+   $sql2 = "SELECT * FROM date";
+   $result2 = $conn->query($sql2);
+   $sql3 = "SELECT * FROM location";
+   $result3 = $conn->query($sql3);
+   $sql4 = "SELECT * FROM ticket";
+   $result4 = $conn->query($sql4);
+   
+   session_start();
+   if (!isset($_SESSION['username'])) {
+      $_SESSION['msg'] = "You must log in first";
+      header('location: login.php');
+  }
+
+  if (isset($_GET['logout'])) {
+      session_destroy();
+      unset($_SESSION['username']);
+      header('location: login.php');
+  }
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -46,7 +74,7 @@
         }
 
         td, th {
-            border: 1px solid #dddddd;
+            border-collapse: collapse;
             text-align: center;
             font-size: 35px;
             padding: 8px;
@@ -208,21 +236,28 @@
 </head>
 <body>
 <table>
-  <tr>
-    <th><a href="/loginlaew.php">wowTicket</th>
-    <th><form class="example" action="action_page.php">
-        <input type="text" placeholder="Search .." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+    <tr>
+    <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
+    <th><form class="example" action="finding.php" method="GET">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-    <th><div class="dropdown">   
-    <button class="dropbtn">PROFILE</button>
-      <div class="dropdown-content">
-      <a href="/editprofile.php">Edit Profile</a>
-      <a href="/myticket.php">My Tickets</a>
-      <a href="/mypurchaes.php">My Purchases</a>
-      </div>
+    <th><div class="dropdown">  
+        <!-- logged in user information -->
+        <button class="dropbtn">PROFILE</button>
+        <div class="dropdown-content">
+        <a href="editprofile.php">Edit Profile</a>
+        <a href="myticket.php">My Tickets</a>
+        <a href="mypurchases.php">My Purchases</a>
+        </div>
+        <?php if (isset($_SESSION['username'])) : ?>
+        
+        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
+              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
+                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
+        <?php endif ?>
     </div></th>
-    <th><input type="button" value="LOG OUT"></th>
+    <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
 </table>
 
@@ -232,7 +267,7 @@
       <div class = "columnicon">
         <div class="boxicon">
               <icon>
-                <a href= "/toPay.php">
+                <a href= "toPay.php">
                 <img src= "img\money.png">
                 </a>
                 <h3 align="center" style="color:saddlebrown">To Pay</h3>
@@ -242,7 +277,7 @@
       <div class = "columnicon">
         <div class="boxicon">
               <icon>
-                <a href= "/toReceive.php">
+                <a href= "toReceive.php">
                 <img src= "img\delivery.png">
                 </a>
                 <h3 align="center" style="color:saddlebrown">To Receive</h3>
@@ -252,7 +287,7 @@
       <div class = "columnicon">
         <div class="boxicon">
               <icon>
-                <a href= "/Complete.php">
+                <a href= "Complete.php">
                 <img src= "img\check-mark.png">
                 </a>
                 <h3 align="center" style="color:saddlebrown">Completed</h3>
@@ -261,9 +296,9 @@
       </div>
   </div>
  <div class="footer">
-   <footer><a href="/loginlaew.php"><h2><p style="color:white;">wowTicket</p></h3></a></footer>
+   <footer><a href="loginlaew.php"><h2><p style="color:white;">wowTicket</p></h3></a></footer>
    <p style="color:white;">help
-   <footer><a href="/contact.php"><p style="color:white;">Support</p></a></footer>
+   <footer><a href="contact.php"><p style="color:white;">Support</p></a></footer>
     </div> 
 </body>
 </html>

@@ -1,18 +1,27 @@
-<?php include('server.php');
+<?php include('server.php'); 
 
-     session_start();
-     if (!isset($_SESSION['username'])) {
-        $_SESSION['msg'] = "You must log in first";
-        header('location: login.php');
-    }
+include('server.php'); 
+   
+$sql = "SELECT * FROM concert";
+$result = $conn->query($sql);
+$sql1 = "SELECT * FROM ticket";
+$result1 = $conn->query($sql1);
+$sql2 = "SELECT * FROM customer_order";
+$result2 = $conn->query($sql2);
+$sql3 = "SELECT * FROM customer";
+$result3 = $conn->query($sql3);
 
-    if (isset($_GET['logout'])) {
-        session_destroy();
-        unset($_SESSION['username']);
-        header('location: login.php');
-    }
+session_start();
+if (!isset($_SESSION['username'])) {
+   $_SESSION['msg'] = "You must log in first";
+   header('location: login.php');
+}
 
-?>
+if (isset($_GET['logout'])) {
+   session_destroy();
+   unset($_SESSION['username']);
+   header('location: login.php');
+}?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -56,7 +65,7 @@
         }
 
         td, th {
-          border-collapse: collapse;
+            border-collapse: collapse;
             text-align: center;
             font-size: 35px;
             padding: 8px;
@@ -69,7 +78,6 @@
         .footer {
             width: 100.0%;
             height:170px;
-	        
 	        bottom:0px;
             background-color: black;
             text-align: left;
@@ -123,6 +131,7 @@
             background-color: #3e8e41;
         }
 
+
         .blank {
             background-color: white;
             width: 11%;
@@ -142,17 +151,38 @@
             text-align: center;
         }
 
-        .mytext {
-          background-color: white;
-          width: 100%;
-          margin-top: 50px;
-          text-align: center;
+        .boxicon {
+          width: 125px;
+          height: 125px;
+          border: 5px solid lightgray;
+        }
+
+        .boxiconselect {
+          width: 125px;
+          height: 125px;
+          border: 5px solid chartreuse;
         }
 
         .concerticon {
           width: 300px;
-          height: 700px;
+          height: 750px;
           border: 1px solid lightgray;
+        }
+
+        .mypurchases {
+          background-color: white;
+          width: 600px;
+          margin-left: 33%;
+          margin-top: 50px;
+          padding: 25px;
+        }
+
+        icon{
+            width: 125px;    
+        }
+
+        icon img{
+            width: 100%;
         }
 
         concert img{
@@ -170,7 +200,7 @@
             display: flex:
             width: 900px;
             margin-left: 12%;
-            margin-top: 10px;
+            margin-top: 200px;
             padding: 25px;
         }
 
@@ -187,7 +217,7 @@
         }
 
         .button {
-        background-color: black; 
+        background-color: SpringGreen; 
         border: none;
         width: 65%;
         color: white;
@@ -208,35 +238,21 @@
         }
 
         .btn-text-center{
-            width: 100%
+	        text-align: center;	
         }
-         
-    </style>
+ 
+</style>
     
     <title>wowTicket</title>
 </head>
 <body>
-
-<!-- notification message-->
-<?php if (isset($_SESSION['success'])) : ?>
-                    <div class="success">
-                        <h3>
-                            <?php 
-                                echo $_SESSION['success'];
-                                unset($_SESSION['success']);
-                            ?>
-                        </h3>
-                    </div>
-    <?php endif ?>
-
 <table>
-  <tr>
+    <tr>
     <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
     <th><form class="example" action="finding.php" method="GET">
         <input type="text" placeholder="Search.." name="search">
         <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-    
     <th><div class="dropdown">  
         <!-- logged in user information -->
         <button class="dropbtn">PROFILE</button>
@@ -251,38 +267,73 @@
               Welcome <strong><?php echo $_SESSION['username']; ?></strong>
                 <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
         <?php endif ?>
-    </div>
-
-  
     </div></th>
     <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
 </table>
-  <div class= "mytext"><h1>POPULAR CONCERTS</h1></div>
+
+<div class = "mypurchases">
+    <h1 align="left">My Purchases</h1>
+    
+      <div class = "columnicon">
+        <div class="boxicon">
+              <icon>
+                <a href= "toPay.php">
+                <img src= "img\money.png">
+                </a>
+                <h3 align="center" style="color:saddlebrown">To Pay</h3>
+              </icon>
+        </div>
+      </div>
+      <div class = "columnicon">
+        <div class="boxicon">
+              <icon>
+                <a href= "toReceive.php">
+                <img src= "img\delivery.png">
+                </a>
+                <h3 align="center" style="color:saddlebrown">To Receive</h3>
+              </icon>
+        </div>
+      </div>
+      <div class = "columnicon">
+        <div class="boxiconselect">
+              <icon>
+                <a href= "Complete.php">
+                <img src= "img\check-mark.png">
+                </a>
+                <h3 align="center" style="color:saddlebrown">Completed</h3>
+              </icon>
+        </div>
+      </div>
+</div> 
 
 <?php
+    $name = $_SESSION['username'];
     
     $sql = 
-    "SELECT customer_order.Concert_ID, COUNT(customer_order.Concert_ID), 
-    concert.Concert_Name, concert.Concert_ID, concert.Img, 
+    "SELECT customer.Customer_ID, customer.Username,
+    customer_order.CustomerOrder_ID, customer_order.Concert_ID, customer_order.Customer_ID, customer_order.Status,
     date.Date,
-    location.Location_Name
-    FROM (((customer_order 
-    LEFT JOIN concert
-    on customer_order.Concert_ID =  concert.Concert_ID)
-    INNER JOIN date ON concert.Concert_ID = date.Concert_ID)
-    INNER JOIN location ON concert.Concert_ID = location.Concert_ID)
-    GROUP BY customer_order.Concert_ID HAVING COUNT(customer_order.Concert_ID) >='3'
+    concert.Concert_Name, concert.Img, 
+    location.Location_Name,
+    ticket.Zone, ticket.SeatNum, ticket.Price 
+    FROM (((((customer
+    INNER JOIN customer_order ON customer.Customer_ID = customer_order.Customer_ID)
+    INNER JOIN date ON customer_order.Concert_ID = date.Concert_ID)
+    INNER JOIN concert ON customer_order.Concert_ID = concert.Concert_ID) 
+    INNER JOIN location ON customer_order.Concert_ID = location.Concert_ID) 
+    INNER JOIN ticket ON customer_order.CustomerOrder_ID = ticket.CustomerOrder_ID)
+    WHERE customer.Username = '$name' AND customer_order.Status = 'success'
     ";
-
     $result = $conn->query($sql);
+
     if ($result->num_rows > 0) :
     // output data of each row
 ?>
 <div class = "boxconcert">
-    <div class= "rowconcert">  
-    <?php
-        while($row = $result->fetch_assoc()):
+    <div class= "rowconcert">         
+<?php
+    while($row = $result->fetch_assoc()):
     ?>
            
            <div class = "columnconcert">
@@ -295,11 +346,9 @@
                             <p>&nbsp; <?php echo $row['Date']?></p>
                             
                             <p style ="color:gray;font-size:12px"><img src="img\map-locator.png" style="width:5%">&nbsp; <?php echo $row['Location_Name']?></p>
-                            <?php    if ($row['Concert_ID']=='1') : ?>
-                                <div class="btn-text-center"><a href="detailticket.php" align="center" class="button">BUY NOW</a></div>
-                            <?php    else : ?>
-                                <div class="btn-text-center"><a href="notbuy.php" align="center" class="button">BUY NOW</a></div>
-                            <?php endif ?>    
+                            <p  style ="color:brown;font-size:15px">&nbsp;Zone  <?php echo $row['Zone']?>, <?php echo $row['SeatNum']?></p>
+                            <p  style ="color:brown;font-size:15px">&nbsp;<?php echo $row['Price']?>THB</p>
+                            <div class="btn-text-center"><a href= "myticket.php" align="center" class="button">Total 1 tickets</a></div>
                         </concert>
                     </div>
             </div> 
@@ -307,67 +356,15 @@
     <?php    else : ?>
         <h2 style="margin:200px;"><?php echo "0 results" ?></h2>
     <?php endif ?>     
-    </div>    
+            
+            
+     </div>    
 </div>
 
-<div class= "mytext"><h1>ALL CONCERTS</h1></div>
-<?php
-    
-    $sql = 
-    "SELECT concert.Concert_Name, concert.Concert_ID, concert.Img, 
-    date.Date,
-    location.Location_Name
-    FROM ((concert 
-    INNER JOIN date ON concert.Concert_ID = date.Concert_ID)
-    INNER JOIN location ON concert.Concert_ID = location.Concert_ID)
-    ";
-
-    $result = $conn->query($sql);
-
-    if ($result->num_rows > 0) :
-    // output data of each row
-?>
-<div class = "boxconcert">
-    <div class= "rowconcert">  
-    <?php
-        while($row = $result->fetch_assoc()):
-    ?>
-           
-           <div class = "columnconcert">
-                    <div class = "concerticon">
-                        <concert>
-                            <a href= "toPay.php">
-                            <img src=  "data: image/jpeg;base64, <?php echo base64_encode($row['Img'])?> ">
-                            </a>
-                            <p style="font-size:19px;">&nbsp; <?php echo $row['Concert_Name']?></p>
-                            <p>&nbsp; <?php echo $row['Date']?></p>
-                            
-                            <p style ="color:gray;font-size:12px"><img src="img\map-locator.png" style="width:5%">&nbsp; <?php echo $row['Location_Name']?></p>
-                            <?php    if ($row['Concert_ID']=='1') : ?>
-                                <div class="btn-text-center"><a href="detailticket.php" align="center" class="button">BUY NOW</a></div>
-                            <?php    else : ?>
-                                <div class="btn-text-center"><a href="notbuy.php" align="center" class="button">BUY NOW</a></div>
-                            <?php endif ?>    
-                        </concert>
-                    </div>
-            </div> 
-    <?php endwhile ?> 
-    <?php    else : ?>
-        <h2 style="margin:200px;"><?php echo "0 results" ?></h2>
-    <?php endif ?>   
-      
-    </div>    
-</div>
-   
-    <div class="mytext" ><a href="selectconcert.php" align="center" class="button">VIEW ALL</a></div>
-      </br></br></br></br>
-    </div> 
-    
-   <div class="footer">
+<div class="footer">
    <footer><a href="loginlaew.php"><h2><p style="color:white;">wowTicket</p></h3></footer>
    <footer><a href="contact.php"><p style="color:white;">help</p></footer>
    <footer><a href="contact.php"><p style="color:white;">Support</p></footer>
     </div> 
-    
 </body>
 </html>

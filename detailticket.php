@@ -18,6 +18,17 @@
    $sql5 = "SELECT * FROM buying";
    $result5 = $conn->query($sql5);
 
+   session_start();
+   if (!isset($_SESSION['username'])) {
+      $_SESSION['msg'] = "You must log in first";
+      header('location: login.php');
+  }
+
+  if (isset($_GET['logout'])) {
+      session_destroy();
+      unset($_SESSION['username']);
+      header('location: login.php');
+  }
 
 ?>
 
@@ -163,7 +174,7 @@
         float: left;
         width: 50%;
         padding: 10px;
-        height: 900px; /* Should be removed. Only for demonstration */
+        height: 500px; /* Should be removed. Only for demonstration */
         }
 
 /* Clear floats after the columns */
@@ -187,12 +198,20 @@
             align: center;
             left: 80%;
             background-color:#3D3C3A;
-            width: 60%;
+            width: 80%;
             height: 100%;
             border: 2px solid black;
             padding: 50px;
             margin: 50px;
             display: inline-block;
+        }
+
+        .textdetail {
+            margin-left:150px;
+        }
+
+        .imgdetail {
+            margin-left:100px;
         }
     </style>
     
@@ -200,21 +219,27 @@
 </head>
 <body>
 <table>
-  <tr>
+    <tr>
     <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
-    <th><form class="example" action="action_page.php">
+    <th><form class="example" action="finding.php" method="GET">
         <input type="text" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-<th><div class="dropdown">   
-<button class="dropbtn">PROFILE</button>
-  <div class="dropdown-content">
-  <a href="editprofile.php">Edit Profile</a>
-  <a href="myticket.php">My Tickets</a>
-  <a href="mypurchases.php">My Purchases</a>
-  </div>
-</div></th>
-<!--    <th><input type="button" value="PROFILE"></th>-->
+    <th><div class="dropdown">  
+        <!-- logged in user information -->
+        <button class="dropbtn">PROFILE</button>
+        <div class="dropdown-content">
+        <a href="editprofile.php">Edit Profile</a>
+        <a href="myticket.php">My Tickets</a>
+        <a href="mypurchases.php">My Purchases</a>
+        </div>
+        <?php if (isset($_SESSION['username'])) : ?>
+        
+        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
+              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
+                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
+        <?php endif ?>
+    </div></th>
     <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
   </table>
@@ -234,14 +259,14 @@
     <img src="image/all2.jpg "width="390" height="500">
       <p>&nbsp;</p> 
       <p>&nbsp;</p> 
-      <br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
-      <h4>Detail </h4>
-      <d style="color:#656868;">GENELABCON คอนเสิร์ตประจำปีของค่าย GENELAB ค่ายดนตรีที่สร้างขึ้นมาเพื่อเปิดพื้นที่ให้ศิลปินคนรุ่นใหม่กลับมาในครั้งนี้กับปรากฏการณ์ครั้งสำคัญที่รวมตัวเหล่าศิลปินจากค่าย GENELAB แบบยกค่าย
-
-      <br /><br />กับงาน “GENELABCON WEEKEND” คอนเสิร์ตประจำปีของค่าย GeneLabที่เติบโตอย่างรวดเร็วจนมีศิลปินในค่ายมากมายนำโดย Cocktail, Three Man Down, Tilly Birds, Taitosmith, The Darkest Romance และศิลปินใหม่จากค่าย GeneLab อาทิเช่น Ae Commander, Asia7, Only Monday, Pang Pattanan, Tiger Killer, Tryst และ 20Hz
-
-      <br /><br />พบกับคอนเสิร์ต 4 คอนเสิร์ต 4 รอบการแสดง ที่บอกเลยว่าพิเศษสุดๆและห้ามพลาดอย่างเด็ดขาด!
-                ในวันเสาร์ที่ 19 และ 20 มิถุนายน 2564 ณ ยูเนี่ยน ฮอลล์, ชั้น 6 ศูนย์การค้ายูเนี่ยน มอลล์</d>
+        <div class="textdetail">
+            <h4 style="margin-left:100px;">Detail </h4>
+            
+            <d style="color:#656868; margin-left:100px;">GENELABCON คอนเสิร์ตประจำปีของค่าย GENELAB ค่ายดนตรีที่สร้างขึ้นมาเพื่อเปิดพื้นที่ให้ศิลปินคนรุ่นใหม่กลับมาในครั้งนี้กับปรากฏการณ์ครั้งสำคัญที่รวมตัวเหล่าศิลปินจากค่าย GENELAB แบบยกค่าย
+        กับงาน “GENELABCON WEEKEND” คอนเสิร์ตประจำปีของค่าย GeneLabที่เติบโตอย่างรวดเร็วจนมีศิลปินในค่ายมากมายนำโดย Cocktail, Three Man Down, Tilly Birds, Taitosmith, The Darkest Romance และศิลปินใหม่จากค่าย GeneLab อาทิเช่น Ae Commander, Asia7, Only Monday, Pang Pattanan, Tiger Killer, Tryst และ 20Hz
+        พบกับคอนเสิร์ต 4 คอนเสิร์ต 4 รอบการแสดง ที่บอกเลยว่าพิเศษสุดๆและห้ามพลาดอย่างเด็ดขาด!
+                        ในวันเสาร์ที่ 19 และ 20 มิถุนายน 2564 ณ ยูเนี่ยน ฮอลล์, ชั้น 6 ศูนย์การค้ายูเนี่ยน มอลล์</d>
+        </div>
     </div>
     
 
@@ -250,18 +275,18 @@
     
 
 
-    <h3 style="color:#656868;"><img src="image/user.png "width="40" height="40">Artist</h3>
-    <h5 style="text-indent: 2em;"><?php echo $row1['Artist_Name']; ?></h5>
-    <h3 style="color:#656868;"><img src="image/calendar.png "width="35" height="40">&nbsp;Show Date</h3>
-    <h5 style="text-indent: 2em;"><?php echo $row2['Date']; ?></h5>
-    <h3 style="color:#656868;"><img src="image/map-locator.png "width="35" height="40">&nbsp;Venue</h3>
-    <h5 style="text-indent: 2em;"><?php echo $row3['Location_Name']; ?></h5>
-    <h3 style="color:#656868;"><img src="image/music.png"width="35" height="40">&nbsp;Type</h3>
-    <h5 style="text-indent: 2em;"><?php echo $row['Category']; ?></h5>
-    <h3 style="color:#656868;"><img src="image/calendar (1).png"width="35" height="40">&nbsp;Public Sale</h3>
-    <h5 style="text-indent: 2em;"><?php echo $row5['Start_Date']; ?></h5>
-    <h3 style="color:#656868;"><img src="image/tickets.png "width="35" height="40">&nbsp;Ticket Price</h3>
-    <h5 style="text-indent: 2em;"><?php echo $row4['Price']; ?></h5>
+    <h3 style="color:#656868;"><img src="image/user.png "width="40" height="40">Artist&nbsp;
+    <span style="color:white; font-size: 20px;" ><?php echo $row1['Artist_Name']; ?></span></h3>
+    <h3 style="color:#656868;"><img src="image/calendar.png "width="35" height="40">&nbsp;Show Date&nbsp;
+    <span style="color:white; font-size: 20px;" ><?php echo $row2['Date']; ?></span></h3>
+    <h3 style="color:#656868;"><img src="image/map-locator.png "width="35" height="40">&nbsp;Venue&nbsp;
+    <span style="color:white; font-size: 20px;" ><?php echo $row3['Location_Name']; ?></span></h3>
+    <h3 style="color:#656868;"><img src="image/music.png"width="35" height="40">&nbsp;Type&nbsp;
+    <span style="color:white; font-size: 20px;" ><?php echo $row['Category']; ?></span></h3>
+    <h3 style="color:#656868;"><img src="image/calendar (1).png"width="35" height="40">&nbsp;Public Sale&nbsp;
+    <span style="color:white; font-size: 20px;" ><?php echo $row5['Start_Date']; ?></span></h3>
+    <h3 style="color:#656868;"><img src="image/tickets.png "width="35" height="40">&nbsp;Ticket Price&nbsp;
+    <span style="color:white; font-size: 20px;" ><?php echo $row4['Price']; ?></span></h3>
 
 
     
@@ -270,7 +295,9 @@
 
     
         <br /><br /><br />
-        <img src="image\-genelabcon-final.jpg "width="470" height="600">    
+        <div class= "imgdetail">
+            <img src="image\-genelabcon-final.jpg "width="470" height="600">   
+        </div> 
     </div>
    
     </div>

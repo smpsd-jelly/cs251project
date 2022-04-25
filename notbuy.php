@@ -1,16 +1,26 @@
-<?php include('server.php');
- session_start();
- if (!isset($_SESSION['username'])) {
-    $_SESSION['msg'] = "You must log in first";
-    header('location: login.php');
-}
-
-if (isset($_GET['logout'])) {
-    session_destroy();
-    unset($_SESSION['username']);
-    header('location: login.php');
-}
+<?php 
+   
+    include('server.php'); 
+    
 ?>
+<?php 
+   
+   $sql = "SELECT * FROM concert";
+   $result = $conn->query($sql);
+   $sql1 = "SELECT * FROM artist";
+   $result1 = $conn->query($sql1);
+   $sql2 = "SELECT * FROM date";
+   $result2 = $conn->query($sql2);
+   $sql3 = "SELECT * FROM location";
+   $result3 = $conn->query($sql3);
+   $sql4 = "SELECT * FROM ticket";
+   $result4 = $conn->query($sql4);
+   $sql5 = "SELECT * FROM buying";
+   $result5 = $conn->query($sql5);
+
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,6 +64,7 @@ if (isset($_GET['logout'])) {
         }
 
         td, th {
+            
             border-collapse: collapse;
             text-align: center;
             font-size: 35px;
@@ -67,7 +78,7 @@ if (isset($_GET['logout'])) {
         .footer {
             width: 100.0%;
             height:170px;
-	        /* position:fixed; */
+	       /* position:fixed;*/
 	        bottom:0px;
             background-color: black;
             text-align: left;
@@ -116,59 +127,13 @@ if (isset($_GET['logout'])) {
         .dropdown:hover .dropdown-content {
             display: block;
         }
-        
+
         .dropdown:hover .dropbtn {
             background-color: #3e8e41;
         }
-        .boxEdit {
-            /* position: fixed; or absolute */
-            top: 100%;
-            color : #282828;
-            align: center;
-            left: 80%;
-            background-color: #f2f2f2;
-            width: 50%;
-            height: 80%;
-            padding: 50px;
-            margin: 50px;
-            display: inline-block;
-            /* box-shadow: 5px 10px 8px #888888; */
-        }
-        
-        input[type=text], select {
-            width: 48%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            }
-        input[type=email], select {
-            width: 48%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            } 
-        
-        input[type=submit] {
-            width: 30%;
-            background-color: #282828;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            border-radius: 15px;
-            }
-        .center {
-            text-align: center;
-            /* border: 3px solid green; */
-            }
+ 
+    
+   
     </style>
     
     <title>wowTicket</title>
@@ -181,66 +146,28 @@ if (isset($_GET['logout'])) {
         <input type="text" placeholder="Search.." name="search">
         <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-    
-    <th><div class="dropdown">  
-        <!-- logged in user information -->
-        <button class="dropbtn">PROFILE</button>
-        <div class="dropdown-content">
-        <a href="editprofile.php">Edit Profile</a>
-        <a href="myticket.php">My Tickets</a>
-        <a href="mypurchases.php">My Purchases</a>
-        </div>
-        <?php if (isset($_SESSION['username'])) : ?>
-        
-        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
-              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
-                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
-        <?php endif ?>
-    </div></th>
+<th><div class="dropdown">   
+<button class="dropbtn">PROFILE</button>
+  <div class="dropdown-content">
+  <a href="editprofile.php">Edit Profile</a>
+  <a href="myticket.php">My Tickets</a>
+  <a href="mypurchases.php">My Purchases</a>
+  </div>
+</div></th>
 <!--    <th><input type="button" value="PROFILE"></th>-->
-    <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
+<th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
   </table>
+  
+  
+
+            <div style ="height:200px"> </div>
+        <h1 style="text-align: center;" >ยังไม่เปิดให้บริการ</h1>
+        <p style="text-align: center;"  >ติดตามความเคลื่อนไหวของคอนเสิร์ตได้ทาง www.wowticket.com </p>
     
-    <!-- contact -->
-    </br><div class="center">
-    <h1 style="font-weight: normal">Contact Us</h1>
-    <p style = "color:gray">Please enter the details of your request.</p>
-    </div>
+        <div style ="height:200px"> </div>
     
-    <div class="center">
-<div class="boxEdit">
-  <form action="contact_db.php" method="post">
-    <label for="fname"></label>
-    <input type="text" id="firstname" name="firstname" placeholder="First Name" require>
-
-    <label for="lname"></label>
-    <input type="text" id="lastname" name="lastname" placeholder="Last Name" require>
-
-    <label for="email"> </label>
-    <input  type="email" id="email" name="email" placeholder="Email"require>
-
-    <label for="subject"></label>
-    <input type="text" id="subject" name="subject" placeholder="Subject"require>
-
-    <label for="message"></label>
-    <textarea type="text" id="message" name="message" placeholder="Write your message here.." 
-    style="height: 300px;;width: 97%;padding: 12px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;"require></textarea>
-    <div class="center">
-    <a href="contact.php"><input type="submit" name="contact_user" class="btn" value="Send">
-    </div>
-  </form>
-</div>
-</div>
-</body>
-
-    <!-- contact -->
-   <div class="footer">
+        <div class="footer">
    <footer><a href="loginlaew.php"><h2><p style="color:white;">wowTicket</p></h3></footer>
    <footer><a href="contact.php"><p style="color:white;">help</p></footer>
    <footer><a href="contact.php"><p style="color:white;">Support</p></footer>

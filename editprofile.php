@@ -1,6 +1,23 @@
 <?php include('server.php');
-$sql = "SELECT * FROM customer";
-$result = $conn->query($sql);
+$sq = "SELECT * FROM customer";
+$resul = $conn->query($sq);
+
+
+
+     session_start();
+     if (!isset($_SESSION['username'])) {
+        $_SESSION['msg'] = "You must log in first";
+        header('location: login.php');
+    }
+
+    if (isset($_GET['logout'])) {
+        session_destroy();
+        unset($_SESSION['username']);
+        header('location: login.php');
+    }
+
+   
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -195,8 +212,16 @@ $result = $conn->query($sql);
             border-radius: 15px
             }
 
-         button[type=submit]:hover {
-            background-color: #45a049;
+         button[type=submit]{
+            width: 40%;
+            background-color: #555555;
+            color: white;
+            padding: 14px 20px;
+            margin: 8px 0;
+            border:1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            border-radius: 15px
         }
        
          
@@ -206,72 +231,109 @@ $result = $conn->query($sql);
 </head>
 <body>
 <table >
-  <tr>
+<tr>
     <th><a href="loginlaew.php" style="text-decoration:none">wowTicket</th>
-    <th><form class="example" action="action_page.php">
-        <input  type="text" style= "width:30%" placeholder="Search.." name="search">
-        <button type="submit"><i class="fa fa-search"></i></button>
+    <th><form class="example" action="finding.php" method="GET">
+        <input type="text" placeholder="Search.." name="search">
+        <button type="submit"  value="Search" ><i class="fa fa-search"><a href= "finding.php"></a></i></button>
     </form></th>
-<th><div class="dropdown">   
-<button class="dropbtn">PROFILE</button>
-  <div class="dropdown-content">
-  <a href="editprofile.php">Edit Profile</a>
-  <a href="myticket.php">My Tickets</a>
-  <a href="mypurchases.php">My Purchases</a>
-  </div>
+    <th><div class="dropdown">   <?php $ro = $resul->fetch_assoc() ?>
+        <!-- logged in user information -->
+        <button class="dropbtn">PROFILE</button>
+        <div class="dropdown-content">
+        <a href="editprofile.php">Edit Profile</a>
+        <a href="myticket.php">My Tickets</a>
+        <a href="mypurchases.php">My Purchases</a>
+        </div>
+        <?php if (isset($_SESSION['username'])) : ?>
+        
+        <span style="font-size:15px;color:#B2B2B2; font-weight:normal;">&emsp;
+              Welcome <strong><?php echo $_SESSION['username']; ?></strong>
+                <!-- <p><a href="loginlaew.php?logout='1'" style="color: red;">Logout</a></p> -->
+        <?php endif ?>
+    </div>
+
+  
 </div></th>
-<!--    <th><input type="button" value="PROFILE"></th>-->
     <th><a href="yangmaidailogin.php"><input type="button" value="LOG OUT"></th>
   </tr>
   </table>
   
-  
+<!-- notification message-->
+<?php if (isset($_SESSION['success'])) : ?>
+                    <div class="success">
+                        <h3>
+                            <?php 
+                                echo $_SESSION['success'];
+                                unset($_SESSION['success']);
+                            ?>
+                        </h3>
+                    </div>
+    <?php endif ?>
 
 <!-- ส่วนของedit profile -->
 <div class="blank">
 
 </div>
+<?php
+ $name = $_SESSION['username'];
 
+ $sql = "SELECT customer.Customer_ID,name.FirstName,name.LastName,customer.BirthDay,customer.Tel,customer.Gender,customer.Email
+ FROM name
+ LEFT JOIN customer
+ ON name.Customer_ID = customer.Customer_ID 
+ WHERE customer.Username='$name'";
+ $result = $conn->query($sql);
+
+?>
 <div  class = "boxEdit">
-    </br>
-    <?php $row = $result->fetch_assoc() ?>
-    <h1 class = "normal">Edit Profile <span style="font-size:15px;color:#B2B2B2">USERID:<?php echo $row['Customer_ID'];?>
-    </span></h1>
-    </br>
 
-    <form action="signup_db.php"  method="post">
-      
-    <label for="fname">FIRST NAME</label>
-    <input type="text" id="fname" name="firstname"  placeholder="Your name.."require>
-    
+    <?php
+    while(($row = $result->fetch_assoc()) !== null){
+    ?>
+            <h1 class = "normal">Edit Profile
+            </h1>
+        
+            <form action="edit_db.php"  method="post">
+            
+            <span style="font-size:15px;color:#B2B2B2">USER ID: </span>
+            <input type="text" name="customerid" readonly value="<?php echo $row['Customer_ID'];?>">
+            <label for="fname">FIRST NAME</label>
+            <input type="text" id="fname" name="firstname"  value="<?php echo $row['FirstName'] ?>"require>
+            
 
-    <label for="lname">LAST NAME </label>
-    <input  type="text" id="lname" name="lastname"  placeholder="Your last name.."require>
-    
+            <label for="lname">LAST NAME </label>
+            <input  type="text" id="lname" name="lastname"  value="<?php echo $row['LastName'] ?>"require>
+            
 
-    <label for="birthday">BIRTHDAY</label>
-    <input style = width:23% type="date" id="birthday" name="birthday"require>
-   
-    <label for="phonenumber">PHONE NO</label>
-    <input style = width:20% type="text" id="phonenumber" name="phonenumber" placeholder="0912345678"require>
+            <label for="birthday">BIRTHDAY</label>
+            <input style = width:23% type="date" id="birthday" name="birthday" value="<?php echo $row['BirthDay'] ?>" require>
+        
+            <label for="phonenumber">PHONE NO</label>
+            <input style = width:20% type="text" id="phonenumber" name="phonenumber" value="<?php echo $row['Tel'] ?>" require>
 
-    <label for="gender">GENDER</label>
-    <select style = "width:20%"  id="Gender" name="gender"require >
-      <option value="notspecified">Not Specified</option>
-      <option value="male">Male</option>
-      <option value="female">Female</option>
-      
-    </select>
+            <label for="gender">GENDER</label>
+            <select style = "width:20%"  id="Gender" name="gender"require >
+            <option value=""><?php echo $row['Gender'] ?></option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            
+            </select>
 
-    <label for="email">Email </label>
-    <input  type="email" id="email" name="email" placeholder="customer.test@gmail.com"require>
-    <p></p>
-    <a href="loginlaew.php" type="submit"  value="Submit">Submit</a>
-    <button type="reset" value="Reset">Cancel</button>
-  </form>
-</div>  
+            <label for="email">Email </label>
+            <input  type="email" id="email" name="email" value="<?php echo $row['Email'] ?>" require>
+            <p></p>
+            <button type="submit" name="edit_user" >Submit</button>
+            <button type="reset" value="Reset" onclick="goBack()">Cancel</button>
+        </form>
+        <?php } ?> 
+        </div>  
 
-
+        <script>
+            function goBack() {
+                window.history.back();
+            }
+        </script>
 
 </br>
 </br></br></br></br></br></br></br></br></br>
