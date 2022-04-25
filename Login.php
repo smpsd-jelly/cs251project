@@ -195,7 +195,7 @@
         
         <div class="input-group">
         <br>
-            <botton style="text-decoration:none" class="b1 f" type="submit" name="login_user"><span>SIGN IN</span></a><br>
+            <a href="loginlaew.php" style="text-decoration:none" class="b1 f" type="submit" name="login_user"><span>SIGN IN</span></a><br>
             </div>
     </form></div>
     <p><h6 align="center" class="no" style="color:gray">forgot password?<a href="signup.php" style="text-decoration:none"><span>&emsp;&emsp;Not a member yet?</span></a></h6></p>

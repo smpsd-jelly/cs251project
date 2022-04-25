@@ -1,14 +1,13 @@
-<?php 
-session_start();
-include('server.php');
+<?php include('server.php');
 $sq = "SELECT * FROM customer";
 $resul = $conn->query($sq);
 
+session_start();
+echo "ยินดีต้อนรับคุณ".$_SESSION["name"];
 ?>
 <?php 
    
-   $sql = "SELECT * FROM 'name'";
-   echo "ยินดีต้อนรับคุณ".$_SESSION["name"];
+   $sql = "SELECT * FROM name";
    $result = $conn->query($sql);
    $sql1 = "SELECT * FROM concert";
    $result1 = $conn->query($sql1);
